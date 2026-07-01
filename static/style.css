@@ -1,0 +1,483 @@
+/* =========================================================
+   ValuAuto — Car Price Predictor
+   Design tokens
+   Colors:
+     --ink        #0B1120  (base background)
+     --slate      #131C31  (secondary background)
+     --slate-2    #1B2740  (card fill base)
+     --amber      #F2A65A  (primary accent — instrument-cluster amber)
+     --amber-dim  #C97F3A
+     --teal       #5EEAD4  (secondary accent — needle glow)
+     --paper      #F5F3EE  (primary text on dark)
+     --muted      #96A1B8  (secondary text)
+   Type:
+     Display — 'Space Grotesk' (headings, brand)
+     Body    — 'Inter' (paragraphs, labels, inputs)
+   ========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #F5F3EE;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 12% -10%, rgba(242, 166, 90, 0.18), transparent 42%),
+    radial-gradient(circle at 90% 110%, rgba(94, 234, 212, 0.14), transparent 45%),
+    linear-gradient(160deg, #0B1120 0%, #10182C 45%, #131C31 100%);
+  background-attachment: fixed;
+}
+
+/* -------------------------------------------------------
+   Decorative dashboard dials (signature element)
+   Large faint speedometer arcs anchored off-canvas
+   ------------------------------------------------------- */
+
+.dial {
+  position: fixed;
+  width: 620px;
+  height: 620px;
+  border-radius: 50%;
+  border: 1px solid rgba(242, 166, 90, 0.10);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dial::before {
+  content: "";
+  position: absolute;
+  inset: 34px;
+  border-radius: 50%;
+  border: 1px dashed rgba(94, 234, 212, 0.08);
+}
+
+.dial--top {
+  top: -320px;
+  right: -220px;
+}
+
+.dial--bottom {
+  bottom: -360px;
+  left: -260px;
+}
+
+@media (max-width: 640px) {
+  .dial {
+    width: 380px;
+    height: 380px;
+  }
+  .dial--top {
+    top: -220px;
+    right: -180px;
+  }
+  .dial--bottom {
+    bottom: -240px;
+    left: -180px;
+  }
+}
+
+/* -------------------------------------------------------
+   Layout shell
+   ------------------------------------------------------- */
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* -------------------------------------------------------
+   Brand
+   ------------------------------------------------------- */
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  align-self: flex-start;
+  margin-bottom: 56px;
+}
+
+.brand__mark {
+  position: relative;
+  width: 30px;
+  height: 30px;
+}
+
+.brand__mark-arc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2.5px solid rgba(242, 166, 90, 0.35);
+  border-top-color: #F2A65A;
+  border-right-color: #F2A65A;
+  transform: rotate(45deg);
+}
+
+.brand__mark-needle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 10px;
+  background: #5EEAD4;
+  transform-origin: bottom center;
+  transform: translate(-50%, -100%) rotate(35deg);
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(94, 234, 212, 0.8);
+}
+
+.brand__name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+}
+
+/* -------------------------------------------------------
+   Hero
+   ------------------------------------------------------- */
+
+.hero {
+  text-align: center;
+  margin-bottom: 44px;
+  max-width: 560px;
+}
+
+.hero__eyebrow {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #F2A65A;
+  margin-bottom: 14px;
+}
+
+.hero__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 2.9rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #F5F3EE;
+  margin-bottom: 18px;
+}
+
+.hero__subtitle {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #96A1B8;
+  font-weight: 400;
+}
+
+/* -------------------------------------------------------
+   Glassmorphism card
+   ------------------------------------------------------- */
+
+.card {
+  width: 100%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 24px;
+  padding: 40px;
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  box-shadow:
+    0 30px 60px -20px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.card__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: #F5F3EE;
+}
+
+.card__ticks {
+  display: flex;
+  gap: 5px;
+}
+
+.card__ticks i {
+  display: block;
+  width: 3px;
+  height: 14px;
+  border-radius: 2px;
+  background: rgba(242, 166, 90, 0.25);
+}
+
+.card__ticks i:nth-child(4n) {
+  background: #F2A65A;
+  height: 18px;
+}
+
+/* -------------------------------------------------------
+   Form
+   ------------------------------------------------------- */
+
+.form__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.field--full {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #C9D1E0;
+  letter-spacing: 0.01em;
+}
+
+.field__unit {
+  font-weight: 400;
+  color: #6E7996;
+  font-size: 0.78rem;
+}
+
+.field input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  padding: 13px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: #F5F3EE;
+  background: rgba(11, 17, 32, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.field input::placeholder {
+  color: #5C6785;
+}
+
+.field input:hover {
+  border-color: rgba(242, 166, 90, 0.35);
+}
+
+.field input:focus {
+  border-color: #F2A65A;
+  background: rgba(11, 17, 32, 0.8);
+  box-shadow: 0 0 0 4px rgba(242, 166, 90, 0.14);
+}
+
+/* Custom select wrapper (pure CSS dropdown arrow, no JS) */
+
+.select-wrap {
+  position: relative;
+}
+
+.select-wrap::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #F2A65A;
+  border-bottom: 2px solid #F2A65A;
+  transform: translateY(-65%) rotate(45deg);
+  pointer-events: none;
+}
+
+.select-wrap select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  padding: 13px 40px 13px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: #F5F3EE;
+  background: rgba(11, 17, 32, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 12px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.select-wrap select:hover {
+  border-color: rgba(242, 166, 90, 0.35);
+}
+
+.select-wrap select:focus {
+  border-color: #F2A65A;
+  background: rgba(11, 17, 32, 0.8);
+  box-shadow: 0 0 0 4px rgba(242, 166, 90, 0.14);
+}
+
+.select-wrap select option {
+  background: #131C31;
+  color: #F5F3EE;
+}
+
+/* -------------------------------------------------------
+   Submit button
+   ------------------------------------------------------- */
+
+.submit-btn {
+  width: 100%;
+  margin-top: 32px;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  color: #0B1120;
+  cursor: pointer;
+  background: linear-gradient(135deg, #F2A65A 0%, #E8934A 100%);
+  box-shadow: 0 14px 30px -10px rgba(242, 166, 90, 0.55);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px -8px rgba(242, 166, 90, 0.7);
+  filter: brightness(1.05);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 10px 20px -10px rgba(242, 166, 90, 0.5);
+}
+
+/* -------------------------------------------------------
+   Prediction result
+   ------------------------------------------------------- */
+
+.result {
+  margin-top: 30px;
+  padding: 26px 28px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(94, 234, 212, 0.12), rgba(242, 166, 90, 0.08));
+  border: 1px solid rgba(94, 234, 212, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  animation: rise 0.45s ease;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #5EEAD4;
+}
+
+.result__value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.7rem;
+  color: #F5F3EE;
+}
+
+/* -------------------------------------------------------
+   Footer
+   ------------------------------------------------------- */
+
+.footer {
+  margin-top: 36px;
+  text-align: center;
+}
+
+.footer p {
+  font-size: 0.8rem;
+  color: #5C6785;
+}
+
+/* -------------------------------------------------------
+   Responsive
+   ------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .page {
+    padding: 32px 18px 48px;
+  }
+
+  .brand {
+    margin-bottom: 40px;
+  }
+
+  .hero {
+    margin-bottom: 32px;
+  }
+
+  .card {
+    padding: 28px 22px;
+    border-radius: 20px;
+  }
+
+  .form__grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .field--full {
+    grid-column: auto;
+  }
+
+  .result__value {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .card__ticks {
+    display: none;
+  }
+}

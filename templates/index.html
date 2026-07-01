@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ValuAuto — Instant Car Valuation</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="dial dial--top"></div>
+  <div class="dial dial--bottom"></div>
+
+  <main class="page">
+
+    <header class="brand">
+      <div class="brand__mark">
+        <span class="brand__mark-arc"></span>
+        <span class="brand__mark-needle"></span>
+      </div>
+      <span class="brand__name">ValuAuto</span>
+    </header>
+
+    <section class="hero">
+      <p class="hero__eyebrow">Resale Intelligence</p>
+      <h1 class="hero__title">Know what your car is<br>really worth.</h1>
+      <p class="hero__subtitle">
+        Enter your vehicle's specifics and get an instant, data-driven
+        resale estimate — no dealership guesswork.
+      </p>
+    </section>
+
+    <section class="card" aria-labelledby="form-heading">
+
+      <div class="card__header">
+        <h2 id="form-heading" class="card__title">Vehicle details</h2>
+        <span class="card__ticks" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </span>
+      </div>
+
+      <form action="/predict" method="POST" class="form">
+
+        <div class="form__grid">
+
+          <div class="field">
+            <label for="present_price">Present Price <span class="field__unit">(₹ Lakhs)</span></label>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              id="present_price"
+              name="Present_Price"
+              placeholder="e.g. 8.50"
+              required>
+          </div>
+
+          <div class="field">
+            <label for="kms_driven">Kms Driven</label>
+            <input
+              type="number"
+              step="1"
+              min="0"
+              id="kms_driven"
+              name="Kms_Driven"
+              placeholder="e.g. 45000"
+              required>
+          </div>
+
+          <div class="field">
+            <label for="owner">Owner <span class="field__unit">(count)</span></label>
+            <input
+              type="number"
+              step="1"
+              min="0"
+              max="5"
+              id="owner"
+              name="Owner"
+              placeholder="e.g. 0"
+              required>
+          </div>
+
+          <div class="field">
+            <label for="car_age">Car Age <span class="field__unit">(years)</span></label>
+            <input
+              type="number"
+              step="1"
+              min="0"
+              id="car_age"
+              name="Car_Age"
+              placeholder="e.g. 5"
+              required>
+          </div>
+
+          <div class="field">
+            <label for="fuel_type">Fuel Type</label>
+            <div class="select-wrap">
+              <select id="fuel_type" name="Fuel_Type" required>
+                <option value="" disabled selected>Choose fuel type</option>
+                <option value="Petrol">Petrol</option>
+                <option value="Diesel">Diesel</option>
+                <option value="CNG">CNG</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="seller_type">Seller Type</label>
+            <div class="select-wrap">
+              <select id="seller_type" name="Seller_Type" required>
+                <option value="" disabled selected>Choose seller type</option>
+                <option value="Dealer">Dealer</option>
+                <option value="Individual">Individual</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field field--full">
+            <label for="transmission">Transmission</label>
+            <div class="select-wrap">
+              <select id="transmission" name="Transmission" required>
+                <option value="" disabled selected>Choose transmission</option>
+                <option value="Manual">Manual</option>
+                <option value="Automatic">Automatic</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <span>Estimate my car's value</span>
+        </button>
+
+      </form>
+
+      {% if prediction_text %}
+      <div class="result">
+        <span class="result__label">Estimated Resale Value</span>
+        <span class="result__value">{{ prediction_text }}</span>
+      </div>
+      {% endif %}
+
+    </section>
+
+    <footer class="footer">
+      <p>Estimates are model-generated guidance, not a guaranteed sale price.</p>
+    </footer>
+
+  </main>
+
+</body>
+</html>
